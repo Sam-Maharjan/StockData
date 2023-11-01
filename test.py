@@ -1,1 +1,3 @@
-print(float('12.1230'))
+from data import findPrecise
+
+print(findPrecise('MSFT'))

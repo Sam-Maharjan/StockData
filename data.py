@@ -19,32 +19,32 @@ def findPrecise(part):
     headers={'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'}
     r=requests.get(url)
     soup=BeautifulSoup(r.text,'html.parser')
-    data1 = soup.find('div', {'class': 'D(ib) W(1/2) Bxz(bb) Pend(12px) Va(t) ie-7_D(i) smartphone_D(b) smartphone_W(100%) smartphone_Pend(0px) smartphone_BdY smartphone_Bdc($seperatorColor)'}).text
-    data2 = soup.find('div', {'class': 'D(ib) W(1/2) Bxz(bb) Pstart(12px) Va(t) ie-7_D(i) ie-7_Pos(a) smartphone_D(b) smartphone_W(100%) smartphone_Pstart(0px) smartphone_BdB smartphone_Bdc($seperatorColor)'}).text
-    data=data1+data2
+    t1_div=soup.find('div',{"class":"D(ib) W(1/2) Bxz(bb) Pend(12px) Va(t) ie-7_D(i) smartphone_D(b) smartphone_W(100%) smartphone_Pend(0px) smartphone_BdY smartphone_Bdc($seperatorColor)"})
+    t1=t1_div.find('table').find_all("tr")
+    lst=[]
+    for i in range(len(t1)):
+        lst.append(t1[i].text)
 
-    formatData(data)
+    t2_div=soup.find('div',{"class":"D(ib) W(1/2) Bxz(bb) Pstart(12px) Va(t) ie-7_D(i) ie-7_Pos(a) smartphone_D(b) smartphone_W(100%) smartphone_Pstart(0px) smartphone_BdB smartphone_Bdc($seperatorColor)"})
+    t2=t1_div.find('table').find_all("tr")
+    for i in range(len(t2)):
+        lst.append(t2[i].text)
 
-def formatData(result):
-    nums='0123456789x,.'
+    return formatData(lst)
+
+
+def formatData(lst):
+    nums='0123456789'
+    ex='52 Week Range'
     data={}
-    temp=0
+    for val in lst:
+        for j in range(len(val)):
+            if(val[j] in nums and j>2):  
+                data[val[:j]]=val[j:]
+                break
+            
 
-    for i in range(len(result)):
-        key=''
-        value=0.0
-        if result[i] in nums:
-            key=result[temp:i]
-            temp=i
-            while result[i] in nums:
-                i+=1
-            print(result[temp:i])
-            value=float(result[temp:i])
-            temp=i
-            data[key]=value
     return data
-
-
         
-print(findPrecise("AAPL"))        
+
 
